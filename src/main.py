@@ -57,7 +57,7 @@ def jugar_mano(mano: tuple, predicciones: dict) -> "dict[str:int]":
         carta_baza = tuple()
         for numero, jugador in enumerate(jugadores):
             cartas_jugador: list = cartas_jugadores[jugador]
-            impresion.imprimir_seleccion_carta(triunfo, mesa, jugador, cartas_jugador)
+            impresion.imprimir_seleccion_carta(triunfo, mesa, jugador, cartas_jugador, predicciones)
 
             jugada = obtener_jugada_valida(jugador, cartas_jugador, carta_baza, triunfo)
             if numero == 0:
@@ -101,8 +101,8 @@ def obtener_jugada_valida(jugador: str, cartas_jugador: "list[tuple]",
 
 def main():
     impresion.clear()
-    # jugadores = ingresar_jugadores()
-    jugadores = ["Luca", "Marco", "Omar", "Gisela"]
+    jugadores = entrada.ingresar_jugadores()
+    # jugadores = ["Luca", "Marco", "Omar", "Gisela"]
     resultado = whist(jugadores)
     if len(resultado[0]) == 1:
         impresion.imprimir_ganador(resultado)

@@ -77,7 +77,8 @@ def imprimir_canto_predicciones(triunfo: "tuple[str, str]", jugador: str,
 
 
 def imprimir_seleccion_carta(triunfo: "tuple[str, str]", mesa: "dict[tuple:str]",
-                             jugador: str, cartas_jugador: "list[tuple]") -> None:
+                             jugador: str, cartas_jugador: "list[tuple]",
+                             predicciones: dict) -> None:
 
     print(f"Carta triunfo de la mano actual:")
     imprimir_mazo([triunfo], False)
@@ -93,6 +94,7 @@ def imprimir_seleccion_carta(triunfo: "tuple[str, str]", mesa: "dict[tuple:str]"
         print(f"El triunfo de esta mano es '{triunfo[1]}', y el palo de la baza es '{palo[1]}'.")
     else:
         print(f"El triunfo de esta mano es '{triunfo[1]}'.")
+    print(f"Prediccion de cada jugador (nombre, predicción): {predicciones}")
 
 
 def imprimir_ganador_baza(triunfo: "tuple[str, str]", mesa: "dict[tuple:str]", ganador: str) -> None:
