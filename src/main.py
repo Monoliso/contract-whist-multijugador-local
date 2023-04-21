@@ -22,12 +22,12 @@ def whist(orden_jugadores: "list[str]") -> tuple:
             puntos_juego[jugador] += puntos_mano[jugador]
         impresion.imprimir_puntaje_mano(puntos_mano, puntos_juego)
         orden_jugadores = orden_jugadores[1:] + [orden_jugadores[0]]  # Rotar lista de jugadores
-    impresion.imprimir_resultado_juego(puntos_juego)
+    impresion.imprimir_resultado_juego(str(puntos_juego))
     ganador_es = logica.determinar_ganador_juego(puntos_juego)
     return ganador_es
 
 
-def obtener_predicciones(mano: tuple) -> "dict[str:int]":
+def obtener_predicciones(mano: tuple) -> "dict[str, int]":
     """ Dado el triunfo de la baza, las cartas de los jugadores, y el orden para
         solicitar cada prediccion, esta función se encarga de mostrarle a cada uno
         la información pertinente para que pueda realizar la prediccion de la mano. """
@@ -45,7 +45,7 @@ def obtener_predicciones(mano: tuple) -> "dict[str:int]":
     return predicciones_mano
 
 
-def jugar_mano(mano: tuple, predicciones: dict) -> "dict[str:int]":
+def jugar_mano(mano: tuple, predicciones: dict) -> "dict[str, int]":
     """ Permite jugar una mano del juego. Maneja la entrada y la salida al usuario.
         Devuelve los puntos que se realizaron en la mano. """
 
@@ -81,6 +81,7 @@ def jugar_mano(mano: tuple, predicciones: dict) -> "dict[str:int]":
 
 def obtener_jugada_valida(jugador: str, cartas_jugador: "list[tuple]",
                           palo_baza: tuple, triunfo: tuple) -> "tuple[str, str]":
+    jugada=1
     condicion = True
     while condicion:
         jugada = entrada.ingresar_jugada(jugador)

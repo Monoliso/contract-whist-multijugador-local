@@ -6,6 +6,7 @@ def ingresar_jugadores():
     """ Se solicita al usuario inicial que ingrese los nombres de los jugadores separados por
         coma. La cantidad mínima es 3, y la máxima 7. """
 
+    jugadores=list()
     condicion = True
     while condicion:
         entrada_usuario = input("Ingrese los nombres de los jugadores separados por coma: ")
@@ -20,7 +21,7 @@ def ingresar_jugadores():
     return jugadores
 
 
-def ingresar_prediccion(jugador: str, numero_bazas: int) -> "dict[str:int]":
+def ingresar_prediccion(jugador: str, numero_bazas: int) -> "dict[str, int]":
     """ Dado un jugador y la cantidad de bazas que se va a jugar, se solicita
         al usuario el ingreso de su prediccion. Se impide que la prediccion supere
         la cantidad de bazas. """
@@ -42,6 +43,7 @@ def ingresar_prediccion(jugador: str, numero_bazas: int) -> "dict[str:int]":
 
 def ingresar_jugada(jugador: str) -> int:
     condicion = True
+    jugada=1
     while condicion:
         try:
             jugada = int(input(f"\n{jugador}, qué carta desea jugar?: "))

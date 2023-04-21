@@ -7,7 +7,7 @@ PALOS = ['♣️', '♥️', '♦️', '♠️']
 VALORES = [str(i+1) for i in range(1, 10)] + ['J', 'Q', 'K', 'A']
 
 
-def repartir_cartas(jugadores: "list[str]", numero_bazas: int) -> "tuple[dict, set]":
+def repartir_cartas(jugadores: "list[str]", numero_bazas: int) -> "tuple[dict, tuple[str, str]]":
     """ Dada una lista de jugadores y la cantidad de bazas que se juega,
         se le reparten la cantidad de cartas correspondiente a cada jugador y
         se devuelve el triunfo de la baza. """
@@ -92,7 +92,7 @@ def determinar_ganador_juego(puntaje_juego: dict) -> tuple:
     return (ganador_es, mayor_puntaje)
 
 
-def determinar_puntos_mano(bazas_ganadas: dict, predicciones: dict) -> "dict[str:int]":
+def determinar_puntos_mano(bazas_ganadas: dict, predicciones: dict) -> "dict[str, int]":
     """ Computa si las bazas ganadas coinciden con la predicción. Devuelve los puntos
         finales de la mano. """
 

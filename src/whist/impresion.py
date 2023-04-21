@@ -66,7 +66,7 @@ def imprimir_transicion(jugador: str) -> None:
 
 def imprimir_canto_predicciones(triunfo: "tuple[str, str]", jugador: str,
                                 cartas_jugador: "list[tuple[str, str]]",
-                                predicciones_previas: "dict[str:int]") -> None:
+                                predicciones_previas: "dict[str, int]") -> None:
 
     print(f"Carta triunfo de la mano actual:")
     imprimir_mazo([triunfo], False)
@@ -76,20 +76,21 @@ def imprimir_canto_predicciones(triunfo: "tuple[str, str]", jugador: str,
         print(f"Prediccion de cada jugador (nombre, predicción): {predicciones_previas}")
 
 
-def imprimir_seleccion_carta(triunfo: "tuple[str, str]", mesa: "dict[tuple:str]",
+def imprimir_seleccion_carta(triunfo: "tuple[str, str]", mesa: "dict[tuple, str]",
                              jugador: str, cartas_jugador: "list[tuple]",
                              predicciones: dict) -> None:
 
+    lista_de_cartas = list(mesa.keys())
     print(f"Carta triunfo de la mano actual:")
     imprimir_mazo([triunfo], False)
     if mesa:
-        jugadores_previos = list(mesa.values())
-        palo = (list(mesa.keys()))[0]
         print("Mesa:")
-        imprimir_mazo(mesa, False)
+        imprimir_mazo(lista_de_cartas, False)
     print(f"Cartas de {jugador}:")
     imprimir_mazo(cartas_jugador, True)
     if mesa:
+        jugadores_previos = list(mesa.values())
+        palo = (list(mesa.keys()))[0]
         print(f"Las cartas en la mesa fueron jugadas por: {jugadores_previos}")
         print(f"El triunfo de esta mano es '{triunfo[1]}', y el palo de la baza es '{palo[1]}'.")
     else:
@@ -97,14 +98,15 @@ def imprimir_seleccion_carta(triunfo: "tuple[str, str]", mesa: "dict[tuple:str]"
     print(f"Prediccion de cada jugador (nombre, predicción): {predicciones}")
 
 
-def imprimir_ganador_baza(triunfo: "tuple[str, str]", mesa: "dict[tuple:str]", ganador: str) -> None:
+def imprimir_ganador_baza(triunfo: "tuple[str, str]", mesa: "dict[tuple, str]", ganador: str) -> None:
 
     clear()
+    lista_de_cartas = list(mesa.keys())
     jugadores_orden = list(mesa.values())
     print("Carta triunfo:")
     imprimir_mazo([triunfo], False)
     print("Mesa:")
-    imprimir_mazo(mesa, False)
+    imprimir_mazo(lista_de_cartas, False)
     input(f"Las cartas en la mesa fueron jugadas por: {jugadores_orden}\n\n"
           f"La baza la ganó {ganador}.")
 
