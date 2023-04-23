@@ -26,6 +26,21 @@ def repartir_cartas(jugadores: "list[str]", numero_bazas: int) -> "tuple[dict, t
     return cartas_jugadores, triunfo
 
 
+def insertar_carta_por_palo(mazo_jugador: list, nueva_carta: tuple) -> "list[tuple]":
+    """ Devuelve un mazo con la carta insertada en función del palo. """
+    # Invirtiendo cada expresión se puede obtener un orden por valor.
+    
+    if mazo_jugador == []:
+        return [nueva_carta]
+    if mazo_jugador[0][1] == nueva_carta[1] and\
+       VALORES.index(mazo_jugador[0][0]) > VALORES.index(nueva_carta[0]):
+        return [nueva_carta] + mazo_jugador
+    if PALOS.index(mazo_jugador[0][1]) > PALOS.index(nueva_carta[1]):
+        return [nueva_carta] + mazo_jugador
+    else:
+        return [mazo_jugador[0]] + insertar_carta_por_palo(mazo_jugador[1:], nueva_carta)
+
+
 def determinar_ganador_baza(mesa: dict, carta_baza: tuple, triunfo: tuple) -> str:
     """ Devuelve el jugador que ganó la baza. """
 
@@ -43,21 +58,6 @@ def determinar_ganador_baza(mesa: dict, carta_baza: tuple, triunfo: tuple) -> st
             ganador = carta
     jugador_ganador = mesa[ganador]
     return jugador_ganador
-
-
-def insertar_carta_por_palo(mazo_jugador: list, nueva_carta: tuple) -> "list[tuple]":
-    """ Devuelve un mazo con la carta insertada en función del palo. """
-    # Invirtiendo cada expresión se puede obtener un orden por valor.
-    
-    if mazo_jugador == []:
-        return [nueva_carta]
-    if mazo_jugador[0][1] == nueva_carta[1] and\
-       VALORES.index(mazo_jugador[0][0]) > VALORES.index(nueva_carta[0]):
-        return [nueva_carta] + mazo_jugador
-    if PALOS.index(mazo_jugador[0][1]) > PALOS.index(nueva_carta[1]):
-        return [nueva_carta] + mazo_jugador
-    else:
-        return [mazo_jugador[0]] + insertar_carta_por_palo(mazo_jugador[1:], nueva_carta)
 
 
 def corroborar_jugada(cartas_jugador: "list[tuple]", jugada: int,

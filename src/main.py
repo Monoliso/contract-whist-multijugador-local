@@ -101,14 +101,16 @@ def obtener_jugada_valida(jugador: str, cartas_jugador: "list[tuple]",
 
 
 def main():
-    impresion.clear()
-    jugadores = entrada.ingresar_jugadores()
-    # jugadores = ["Luca", "Marco", "Omar", "Gisela"]
-    resultado = whist(jugadores)
-    if len(resultado[0]) == 1:
-        impresion.imprimir_ganador(resultado)
-    else:
-        impresion.imprimir_empate(resultado)
+    pass
+
+    # impresion.clear()
+    # jugadores = entrada.ingresar_jugadores()
+    # # jugadores = ["Luca", "Marco", "Omar", "Gisela"]
+    # resultado = whist(jugadores)
+    # if len(resultado[0]) == 1:
+    #     impresion.imprimir_ganador(resultado)
+    # else:
+    #     impresion.imprimir_empate(resultado)
 
 
 if __name__ == "__main__":
