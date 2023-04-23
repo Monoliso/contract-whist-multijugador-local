@@ -55,11 +55,10 @@ async def main():
     await nc.drain()
 
 if __name__ == '__main__':
-    # process = iniciar_server()
-    # clear()
+    process = iniciar_server()
+    clear()
     asyncio.run(main())
-    # process.terminate()
-    # process.wait()
-    # print("process terminated :D")
-
+    process.terminate()
+    process.wait()
+    print("process terminated :D")
     
