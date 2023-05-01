@@ -1,3 +1,4 @@
 src/__pycache__
 src/whist/__pycache__
 venv
+.vscode/settings.json
