@@ -9,26 +9,22 @@ from nats.errors import TimeoutError
 def clear():
     print("\033[H\033[J", end="")
 
-def iniciar_server():
-    dirname = os.path.dirname(__file__)
-    archivo = os.path.join(dirname, "nats-server", "nats-server-v2.6.5-linux-amd64", "nats-server")
-    p = subprocess.Popen([archivo])
-    return p
-
-async def suscribir(client):
+def ingresar_partida():
     partida = input("Ingrese el nombre de la partida: ")
     while (partida == ""):
         print("Ingreso invalido, pruebe de vuelta...")
         partida = input("Ingrese el nombre de la partida: ")
-    jugador = await client.subscribe(partida)
 
-    return (partida, jugador)
+    return partida
 
-async def unirse(client, nombre_jugador, partida: str):
+async def unirse(nombre_jugador, partida: str):
+    # connect to server
+    servers = os.environ.get("NATS_URL", "nats://localhost:4222").split(",")
+    client = await nats.connect(servers=servers)
     lista_jugadores = list()
     
     if partida=="":
-        partida = input("Ingrese el nombre de la partida: ")
+        partida = ingresar_partida()
 
     partida_encontrada = False
     jugador = await client.subscribe(partida)
@@ -36,64 +32,48 @@ async def unirse(client, nombre_jugador, partida: str):
 
     while not partida_encontrada:
         await client.publish(partida, msg)
-        await jugador.next_msg()
+        print(await jugador.next_msg())
         try:
-            reply = await jugador.next_msg(timeout=0.2)
-            respuesta = reply.data.decode().split(",", 1)
+            reply = await jugador.next_msg(timeout=1)
         except TimeoutError:
             print("No se encontró la partida, intente de vuelta...")
-            partida, jugador = await suscribir(client)
+            partida = ingresar_partida()
+            jugador = await client.subscribe(partida)
         else:
-            if respuesta[1]=="PARTIDA_INICIADA":
-                print("Partida ya iniciada, intente de vuelta...")
-                partida, jugador = await suscribir(client)
-            else:
-                partida_encontrada = True
-    
-    while True:
-        try:
-            reply = await jugador.next_msg(timeout=0.2)
-        except TimeoutError:
-            pass
-        else:
-            respuesta = reply.data.decode().split(",")
-            break
-
-    lista_jugadores = reply.data.split(",")
-
-    while True:
-        try:
-            reply = await jugador.next_msg()
-            respuesta = reply.data.decode().split(",", 1)
-        except TimeoutError:
-            pass
-        else:
-            if respuesta[1]=="INICIAR_PARTIDA":
-                break
-            if respuesta[1]=="hola":
-                continue
-            else:
-                lista_jugadores = reply.data.split(",")
-                
-
-
-async def hostear(client, partida):
-    sub = await client.subscribe(partida)
-    print("prueba")
-    while True:
-        try:
-            reply = await sub.next_msg()
             respuesta = reply.data.decode().split(",", 1)
             print(respuesta)
-        except TimeoutError:
-            continue
-        else:
-            if respuesta[1]=="TERMINAR_PARTIDA":
-                break
-            if respuesta[1]=="INICIAR_PARTIDA":
-                continue
-            elif respuesta[1]=="hola":
-                await client.publish(partida, b"host,hola")
+            if respuesta[1]=="PARTIDA_INICIADA":
+                print("Partida ya iniciada, intente de vuelta...")
+                partida = ingresar_partida()
+                jugador = await client.subscribe(partida)
+            if respuesta[1]=="hola":
+                partida_encontrada = True
+    
+    # while True:
+    #     try:
+    #         reply = await jugador.next_msg(timeout=0.2)
+    #     except TimeoutError:
+    #         pass
+    #     else:
+    #         respuesta = reply.data.decode().split(",")
+    #         break
+
+    # lista_jugadores = reply.data.split(",")
+
+    # while True:
+    #     try:
+    #         reply = await jugador.next_msg()
+    #         respuesta = reply.data.decode().split(",", 1)
+    #     except TimeoutError:
+    #         pass
+    #     else:
+    #         if respuesta[1]=="INICIAR_PARTIDA":
+    #             break
+    #         if respuesta[1]=="hola":
+    #             continue
+    #         else:
+    #             lista_jugadores = reply.data.split(",")
+
 
     # nombre = obtener_nombre_partida()
     # sub = client.subscribe(nombre)
@@ -129,16 +109,7 @@ async def hostear(client, partida):
     # msg = await sub.next_msg(timeout=0.2)
     # print(f"{msg.data} on subject {msg.subject}")
 
-
 async def main():
-    process = iniciar_server()
-    clear()
-    await asyncio.sleep(0.1)
-
-    # connect to server
-    servers = os.environ.get("NATS_URL", "nats://localhost:4222").split(",")
-    client = await nats.connect(servers=servers)
-
     # hostear o unirse a una partida
     ans = input("Crear sala(0) o unirse a una partida(1): ")
     while (ans != "0" and ans != "1"):
@@ -147,17 +118,23 @@ async def main():
 
     nombre_jugador = input("Ingrese su nombre: ")
     nombre_partida = ""
-    if ans:
-        await unirse(client, nombre_jugador, nombre_partida)
-    else:
-        partida = input("Ingrese el nombre de la partida: ")
-        await asyncio.gather(unirse(client, nombre_jugador, partida), hostear(client, partida))
+    server = None
+    if ans=='0':
+        print("anda esto????")
+        nombre_partida = input("Ingrese el nombre de la partida: ")
+        server = subprocess.Popen(["python3.8", "./server.py", nombre_partida])
+        await asyncio.sleep(0.2)
+        
+    await unirse(nombre_jugador, nombre_partida)
 
-    await client.drain()
+    # await client.drain()
 
-    process.terminate()
-    process.wait()
+    if server:
+        server.terminate()
+        server.wait(1)
     print("process terminated :D")
+
+    # clear()
 
 if __name__ == '__main__':
     asyncio.run(main())
